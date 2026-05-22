@@ -148,8 +148,8 @@ foreach ($drive in $drives) {
         $children = Get-ChildItem $sviPath -Directory
         foreach ($child in $children) {
             if ($child.Name -ne $TxnGuid) {
-                Write-Hit "FsTx Dir (unknown GUID)" \
-                    "Unexpected transaction GUID: $($child.Name)" \
+                Write-Hit "FsTx Dir (unknown GUID)" `
+                    "Unexpected transaction GUID: $($child.Name)" `
                     $child.FullName
             }
         }
@@ -206,7 +206,7 @@ if (Test-Path $ktmRegPath) {
         $key = Get-ChildItem $ktmRegPath |
                Where-Object { $_.PSChildName -ieq $formatted }
         if ($key) {
-            Write-Hit "KTM Registry" "YellowKey GUID registered: $formatted" \
+            Write-Hit "KTM Registry" "YellowKey GUID registered: $formatted" `
                 "$ktmRegPath\$formatted"
         }
     }
@@ -245,8 +245,8 @@ foreach ($drive in $drives) {
     if (Test-Path $txfLog) {
         $items = Get-ChildItem $txfLog 2>$null
         if ($items) {
-            Write-Hit "TxF Metadata" \
-                "Active TxF log present on $($drive.Root) ($($items.Count) item(s))" \
+            Write-Hit "TxF Metadata" `
+                "Active TxF log present on $($drive.Root) ($($items.Count) item(s))" `
                 $txfLog
         }
     }
@@ -266,8 +266,8 @@ try {
     foreach ($event in $events) {
         if ($event.Message -match $allSearchGuids) {
             $matched = [regex]::Match($event.Message, $allSearchGuids).Value
-            Write-Hit "Event Log (KTM)" \
-                "EventID $($event.Id) at $($event.TimeCreated) references GUID: $matched" \
+            Write-Hit "Event Log (KTM)" `
+                "EventID $($event.Id) at $($event.TimeCreated) references GUID: $matched" `
                 "Microsoft-Windows-KtmRm/Operational"
         }
     }
