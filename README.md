@@ -18,3 +18,29 @@ How to reproduce :
 Now why would I say this is a **backdoor** ? The component that is responsible for this bug is not present anywhere (even in the internet) except inside WinRE image and what makes it raise suspicions is the fact that the exact same component is also present with the exact same name in a normal windows installation but without the functionalities that trigger the bitlocker bypass issue. Why ? I just can't come up with an explanation beside the fact that this was intentional. Also for whatever reason, only windows 11 (+Server 2022/2025) are affect, windows 10 is not.
 
 A huge thanks to MORSE, MSTIC and Microsoft GHOST for making this public disclosure possible ;)
+
+---
+
+## Detection
+
+[`Detect-YellowKey.ps1`](Detect-YellowKey.ps1) is a PowerShell detection script that scans for all known IoCs associated with this vulnerability. Must be run as Administrator.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Detect-YellowKey.ps1
+```
+
+Checks performed:
+- FsTx artifact directory on all volumes (by path, file size, and CLFS magic bytes)
+- UTF-16 `winpeshl.ini` target path embedded in CLFS log containers
+- KTM registry entries for known transaction GUIDs
+- `$TXF_DATA` alternate data stream on `winpeshl.ini`
+- TxF metadata directories on all volumes
+- KTM operational event log
+
+---
+
+## Analysis
+
+[`IS-THIS-MALWARE.md`](IS-THIS-MALWARE.md) contains a full binary analysis of the FsTx artifact, including entropy measurements, malware pattern checks, and a complete accounting of every string found in the files.
+
+**Verdict: not malware.** The artifact contains no executable code, no shellcode, no network infrastructure, and no hidden payload. Every byte is accounted for as standard CLFS/TxF data structures and the two file paths that form the exploit mechanism.
